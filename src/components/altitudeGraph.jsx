@@ -4,8 +4,8 @@ import chart from "./chartD3.js";
 import * as _ from "lodash";
 
 //TODO: either dont render graph until theres enough data or find some way to keep it clean
-//TODO: splice log to only include the last 10 minutes of data
 //TODO: offer options to view graph from the last 1 minute, 10 minutes or since page load
+//TODO: add padding to the y axis (altitude)
 
 class AltitudeGraph extends Component {
   componentDidMount() {

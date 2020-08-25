@@ -8,6 +8,7 @@ import AltitudeGraph from "./components/altitudeGraph.jsx";
 //TODO: Add better handling for when data isnt fetched
 //TODO: Check to see if theres a better way to pass the data to the children modules so we dont have to map things multiple times
 //TODO: Hide alert until first alert is called
+
 class App extends Component {
   state = {
     data: [],
@@ -57,12 +58,12 @@ class App extends Component {
     var sum = 0;
     var average = 0;
     if (this.state.log.length > 5) {
-      for (var i = this.state.log.length - 6; i < this.state.log.length; i++) {
+      for (let i = this.state.log.length - 6; i < this.state.log.length; i++) {
         sum += this.state.log[i].altitude;
       }
       average = sum / 6;
     } else {
-      for (var i = 0; i < this.state.log.length; i++) {
+      for (let i = 0; i < this.state.log.length; i++) {
         sum += this.state.log[i].altitude;
       }
       average = sum / this.state.log.length;
@@ -74,7 +75,7 @@ class App extends Component {
   //Filter the warnings so they arent repeating in the log
   addWarningsToLog = (warning) => {
     if (
-      this.state.warningMessage !=
+      this.state.warningMessage !==
       this.state.warnings[this.state.warnings.length - 1]
     ) {
       const newWarnings = this.state.warnings.concat(warning);
@@ -92,7 +93,7 @@ class App extends Component {
       });
     } else if (
       averageAltitude >= 160 &&
-      this.state.warningMessage == "WARNING: RAPID ORBITAL DECAY IMMINENT"
+      this.state.warningMessage === "WARNING: RAPID ORBITAL DECAY IMMINENT"
     ) {
       this.setState({
         ...this.state,
