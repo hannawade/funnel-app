@@ -29,7 +29,7 @@ $ npm install bootstrap
 
 ``` bash
 # run the app in development mode
-$ npm install
+$ npm start
 
 # runs unit tests
 $ npm test
