@@ -23,6 +23,12 @@ $ npm install
 
 # install bootstrap
 $ npm install bootstrap
+
+#install enzyme
+$ npm install enzyme
+
+#install enzyme-adapter-react-16
+$ npm install enzyme-adapter-react-16
 ```
 
 ## Run The App and Tests
