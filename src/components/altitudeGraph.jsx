@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import chart from "./chartD3.js";
 import * as _ from "lodash";
+import Spinner from "react-bootstrap/Spinner";
 
 //TODO: either dont render graph until theres enough data or find some way to keep it clean
 //TODO: offer options to view graph from the last 1 minute, 10 minutes or since page load
@@ -14,8 +15,8 @@ class AltitudeGraph extends Component {
     chart.create(
       el,
       {
-        width: 960,
-        height: 500,
+        width: 810,
+        height: 475,
       },
       this.getChartState()
     );
@@ -50,8 +51,28 @@ class AltitudeGraph extends Component {
     }
   }
 
+  isLoaded() {
+    if (this.props.log.length < 3) {
+      return (
+        <div className="altitude-graph-loading">
+          <Spinner animation="border" />
+          <div>
+            Please wait 30 seconds for graph to populate with enough data
+          </div>
+        </div>
+      );
+    } else {
+      return <div className="chart" />;
+    }
+  }
+
   render() {
-    return <div className="chart"></div>;
+    return (
+      <div className="altitude-graph">
+        <h3 className="altitude-graph-title">Altitude Graph</h3>
+        {this.isLoaded()}
+      </div>
+    );
   }
 }
 

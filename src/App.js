@@ -1,21 +1,23 @@
 import React, { Component } from "react";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import NavBar from "./components/navbar.jsx";
 import AltitudeLog from "./components/altitudeLog.jsx";
 import WarningLog from "./components/warningLog.jsx";
-import "./App.css";
 import AltitudeGraph from "./components/altitudeGraph.jsx";
+import AvgAltitude from "./components/averageAltitude.jsx";
+import TimeOpen from "./components/timeOpen.jsx";
+import Footer from "./components/footer.jsx";
+import "./App.css";
 
 //TODO: Add better handling for when data isnt fetched
-//TODO: Check to see if theres a better way to pass the data to the children modules so we dont have to map things multiple times
-//TODO: Hide alert until first alert is called
 
 class App extends Component {
   state = {
     data: [],
     log: [],
     warnings: [],
-    warningMessage:
-      "Warnings will display here when satellite orbit average altitude is under 160k for 1 minute",
     isFetching: false,
   };
 
@@ -71,15 +73,11 @@ class App extends Component {
     return average;
   }
 
-  //Adds warning to warnings
   //Filter the warnings so they arent repeating in the log
   addWarningsToLog = (warning) => {
-    if (
-      this.state.warningMessage !==
-      this.state.warnings[this.state.warnings.length - 1]
-    ) {
+    if (warning !== this.state.warnings[this.state.warnings.length - 1]) {
       const newWarnings = this.state.warnings.concat(warning);
-      this.setState({ ...this.state, warnings: newWarnings });
+      this.setState({ warnings: newWarnings });
     }
   };
 
@@ -87,54 +85,62 @@ class App extends Component {
   calculateWarning() {
     var averageAltitude = this.calculateAverageAltitude();
     if (averageAltitude < 160 && this.state.log.length > 5) {
-      this.setState({
-        ...this.state,
-        warningMessage: "WARNING: RAPID ORBITAL DECAY IMMINENT",
-      });
-    } else if (
-      averageAltitude >= 160 &&
-      this.state.warningMessage === "WARNING: RAPID ORBITAL DECAY IMMINENT"
-    ) {
-      this.setState({
-        ...this.state,
-        warningMessage: "Sustained Low Earth Orbit Resumed",
-      });
+      this.addWarningsToLog("WARNING: RAPID ORBITAL DECAY IMMINENT");
+      return (
+        <div className="alert alert-danger" role="alert">
+          WARNING: RAPID ORBITAL DECAY IMMINENT
+        </div>
+      );
+    } else if (averageAltitude >= 160) {
+      this.addWarningsToLog("Sustained Low Earth Orbit");
     }
-    this.addWarningsToLog(this.state.warningMessage);
-  }
-
-  //Formats the warning type between danger(red) and success(green)
-  getWarningClass() {
-    let warningClass = "alert alert-";
-    warningClass +=
-      this.state.warningMessage === "WARNING: RAPID ORBITAL DECAY IMMINENT"
-        ? "danger"
-        : "success";
-    return warningClass;
   }
 
   render() {
     const { data, log, isFetching } = this.state;
     return (
-      <React.Fragment>
+      <div>
         {data.map((d) => (
           <NavBar altitude={d.altitude} />
         ))}
-        <main className="container">
-          <div className={this.getWarningClass()} role="alert">
-            {this.state.warningMessage}{" "}
-          </div>
-          <AltitudeGraph log={log} />
-          {data.map((d) => (
-            <AltitudeLog
-              altitude={d.altitude}
-              last_updated={d.last_updated}
-              log={log}
-            />
-          ))}
-          <WarningLog warnings={this.state.warnings} />
-        </main>
-      </React.Fragment>
+        {this.calculateWarning()}
+        <div className="app">
+          <Container fluid="true">
+            <Row noGutters="true">
+              <Col className="borders">
+                <AltitudeGraph log={log} />
+              </Col>
+              <Col className="borders">
+                {data.map((d) => (
+                  <AltitudeLog
+                    altitude={d.altitude}
+                    last_updated={d.last_updated}
+                    log={log}
+                  />
+                ))}
+              </Col>
+            </Row>
+            <Row noGutters="true">
+              <Col className="borders">
+                <WarningLog warnings={this.state.warnings} />
+              </Col>
+              <Col xs={4}>
+                <Row noGutters="true">
+                  <Col className="borders">
+                    <AvgAltitude altitude={this.calculateAverageAltitude()} />
+                  </Col>
+                </Row>
+                <Row noGutters="true">
+                  <Col className="borders">
+                    <TimeOpen time={this.state.log.length * 10} />
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+          </Container>
+        </div>
+        <Footer />
+      </div>
     );
   }
 }

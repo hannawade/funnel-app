@@ -1,5 +1,3 @@
-//most code adapted from https://github.com/marekdano/react-charts-and-maps/blob/master/src/chartD3.js
-
 import * as d3 from "d3";
 
 let chart = {},
@@ -91,14 +89,6 @@ chart.draw = function (svg, log) {
     .attr("stroke-linecap", "round")
     .attr("stroke-width", 1.5)
     .attr("d", line);
-
-  g.append("text")
-    .attr("class", "chart-title")
-    .attr("x", width / 2)
-    .attr("y", 0)
-    .attr("text-anchor", "middle")
-    .style("font-size", "16px")
-    .text("Altitude Graph");
 };
 
 chart.cleanUp = function (el) {
